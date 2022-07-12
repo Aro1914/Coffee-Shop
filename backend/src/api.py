@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this function will add one
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -66,10 +66,16 @@ def get_drinks_detail():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks')
+@app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def create_drink():
-    body = json.loads(request)
+    print(request.get_json())
+    drink = Drink(title=request.get_json()['title'], recipe=json.dumps(request.get_json()['recipe']))
+    drink.insert()
+    return jsonify({
+        'success': True,
+        'drinks': [drink.long()],
+    })
     # Pending
 
 
@@ -86,12 +92,12 @@ def create_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('drinks/<id>')
-@require_auth('patch:drinks')
+@app.route('/drinks/<id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
 def edit_drink(id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
-    drink.title = request.get_json['title']
-    drink.recipe = request.get_json['recipe']
+    drink.title = request.get_json()['title']
+    drink.recipe = json.dumps(request.get_json()['recipe'])
     drink.update()
 
 '''
@@ -104,7 +110,7 @@ def edit_drink(id):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks/<id>')
+@app.route('/drinks/<id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
 def delete_drink(id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
