@@ -14,13 +14,14 @@ We recommend working within a virtual environment whenever using Python for proj
 
 #### PIP Dependencies
 
-Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
+Once you have your virtual environment setup and running, install dependencies by navigating to the `/backend` directory and running:
 
 ```bash
 pip install -r requirements.txt
+pip install typed-ast
 ```
 
-This will install all of the required packages we selected within the `requirements.txt` file.
+This will install all of the required packages we selected within the `requirements.txt` file and typed-ast.
 
 ##### Key Dependencies
 
@@ -78,10 +79,3 @@ The `--reload` flag will detect file changes and restart the server automaticall
    - Right-clicking the collection folder for barista and manager, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
    - Run the collection and correct any errors.
    - Export the collection overwriting the one we've included so that we have your proper JWTs during review!
-
-### Implement The Server
-
-There are `@TODO` comments throughout the `./backend/src`. We recommend tackling the files in order and from top to bottom:
-
-1. `./src/auth/auth.py`
-2. `./src/api.py`
