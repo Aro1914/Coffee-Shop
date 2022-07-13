@@ -319,3 +319,90 @@ Example Response:
 
 These are the most likely errors you may come across relating to Authentication and Authorization.
 
+#### 401 Errors
+
+Header related Errors:
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Authorization header is expected.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Authorization header must start with 'Bearer'.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Token not found.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Authorization header must be bearer token.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Authorization malformed.",
+}
+```
+
+Permission related errors:
+
+```json
+{
+  "success": false,
+  "error": 400,
+  "message": "Permissions not included in JWT.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 403,
+  "message": "Permission not found.",
+}
+```
+
+Token related errors:
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Authorization malformed.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 401,
+  "message": "Incorrect claims. Please, check the audience and issuer.",
+}
+```
+
+```json
+{
+  "success": false,
+  "error": 400,
+  "message": "Unable to find the appropriate key.",
+}
+```
