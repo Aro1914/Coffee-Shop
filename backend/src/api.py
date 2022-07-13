@@ -65,7 +65,7 @@ def get_drinks():
         if drinks is None:
             set_error(404)
             raise
-        print(drinks)
+
         s_drinks = [drink.short() for drink in drinks]
 
         return jsonify({
