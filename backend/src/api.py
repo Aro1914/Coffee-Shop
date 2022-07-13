@@ -123,11 +123,31 @@ def create_drink():
     set_error(500)
     try:
         try:
-            drink = Drink(title=request.get_json()[
-                'title'], recipe=json.dumps(request.get_json()['recipe']))
-            drink.insert()
-        except:
             set_error(400)
+            if not 'title' in request.get_json() or not 'recipe' in request.get_json():
+                set_error(422)
+                raise
+            incoming_title = request.get_json()['title']
+            incoming_recipe = request.get_json()['recipe']
+            if incoming_title == '' or len(incoming_recipe) == 0:
+                set_error(422)
+                raise
+        except:
+            raise
+
+        query_drink = Drink.query.filter(
+            Drink.title.ilike(str(incoming_title))).first()
+
+        if query_drink is None:
+            try:
+                drink = Drink(title=incoming_title,
+                              recipe=json.dumps(incoming_recipe))
+                drink.insert()
+            except:
+                set_error(500)
+        else:
+            set_error(409)
+            raise
 
         return jsonify({
             'success': True,
@@ -156,16 +176,35 @@ def edit_drink(id):
     set_error(500)
     try:
         drink = Drink.query.filter(Drink.id == id).one_or_none()
+        incoming_title = None
+        incoming_recipe = None
+        try:
+            set_error(400)
+            if not ('title' in request.get_json() and 'recipe' in request.get_json()):
+                set_error(422)
+                raise
+            incoming_title = request.get_json(
+            )['title'] if 'title' in request.get_json() else None
+            incoming_recipe = json.dumps(request.get_json(
+            )['recipe']) if 'recipe' in request.get_json() else None
+        except:
+            raise
+
+        query_drink = Drink.query.filter(
+            Drink.title.ilike(str(incoming_title))).first()
+
+        if query_drink is None:
+            try:
+                drink.title = incoming_title if incoming_title != None else drink.title
+                drink.recipe = incoming_recipe if incoming_recipe != None else drink.recipe
+                drink.update()
+            except:
+                raise
+        else:
+            set_error(409)
+            raise
         if drink is None:
             set_error(404)
-            raise
-        try:
-            drink.title = request.get_json(
-            )['title'] if 'title' in request.get_json() else drink.title
-            drink.recipe = json.dumps(request.get_json(
-            )['recipe']) if 'recipe' in request.get_json() else drink.recipe
-            drink.update()
-        except:
             raise
 
         return jsonify({

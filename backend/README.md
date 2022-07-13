@@ -49,33 +49,273 @@ flask run --reload
 
 The `--reload` flag will detect file changes and restart the server automatically.
 
-## Tasks
+## API EndPoints
 
-### Setup Auth0
+### Get Drinks
 
-1. Create a new Auth0 Account
-2. Select a unique tenant domain
-3. Create a new, single page web application
-4. Create a new API
-   - in API Settings:
-     - Enable RBAC
-     - Enable Add Permissions in the Access Token
-5. Create new API permissions:
-   - `get:drinks`
-   - `get:drinks-detail`
-   - `post:drinks`
-   - `patch:drinks`
-   - `delete:drinks`
-6. Create new roles for:
-   - Barista
-     - can `get:drinks-detail`
-     - can `get:drinks`
-   - Manager
-     - can perform all actions
-7. Test your endpoints with [Postman](https://getpostman.com).
-   - Register 2 users - assign the Barista role to one and Manager role to the other.
-   - Sign into each account and make note of the JWT.
-   - Import the postman collection `./starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
-   - Right-clicking the collection folder for barista and manager, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
-   - Run the collection and correct any errors.
-   - Export the collection overwriting the one we've included so that we have your proper JWTs during review!
+`GET '/drinks'`
+
+Fetches a lists of drinks - Available to the public and users with Barista or Manager roles.
+
+- Request Arguments: None
+- Returns: An object with the following properties:
+  - `success`: A boolean representing the status of the result of the request.
+  - `drinks`: An array of objects with the following properties:
+    - `id`: The ID of the drink.
+    - `title`: The title of the drink.
+    - `recipe`: An array of objects with the following properties:
+      - `color`: A color in string format.
+      - `parts`: An integer representing the distribution.
+
+Example Response:
+
+```json
+{
+  "success": true,
+  "drinks": [
+   {
+      "id": 1,
+      "title": "Water",
+      "recipe": [
+         {
+            "color": "blue",
+            "parts": 1
+         },
+      ]
+   },
+  ]
+}
+```
+
+### Get Drink Detail
+
+`GET '/drink-details'`
+
+Fetches a list of drinks with the names of their ingredients - Available only to users with Barista or Manager roles.
+
+- Returns: An object with the following properties:
+  - `success`: A boolean representing the status of the result of the request.
+  - `drinks`: An array of object(s) with the following properties:
+    - `id`: The ID of the drink.
+    - `title`: The title of the drink.
+    - `recipe`: An array of objects with the following properties:
+      - `name`: The name of the ingredient.
+      - `color`: A color in string format.
+      - `parts`: An integer representing the distribution.
+
+Example Response:
+
+```json
+{
+  "success": true,
+  "drinks": [
+   {
+      "id": 1,
+      "title": "Water",
+      "recipe": [
+         {
+            "name": "water",
+            "color": "blue",
+            "parts": 1
+         },
+      ]
+   },
+  ]
+}
+```
+
+### Delete Drink
+
+`DELETE '/drinks/<int:id>'`
+
+Deletes a drink - Available only to users with Manager roles.
+
+- Request Arguments: None
+- Returns: An object with the following properties:
+  - `success`: A boolean representing the status of the result of the request.
+  - `delete`: A integer representing the ID of the deleted drink.
+
+Example Response:
+
+```json
+{
+  "success": true,
+  "delete": 0,
+}
+```
+
+### Update Drink
+
+`PATCH '/api/v0.1.0/questions/<int:id>'`
+
+Update a drink - Available only to users with Manager roles.
+
+- Request Arguments: None
+- Request Body Properties:
+  - `title`: The question
+  - `recipe`: An array of object(s) with the following properties:
+    - `name`: The name of the ingredient.
+    - `color`: A color in string format.
+    - `parts`: An integer representing the distribution.
+- Returns: An object with the following properties:
+  - `recipe`: HTTP status code
+  - `success`: A boolean representing the status of the result of the request.
+  - `drink`: An array with a single object representing the updated drink with the following properties:
+    - `id`: The ID of the drink.
+    - `title`: The title of the drink.
+    - `recipe`: An array of objects with the following properties:
+      - `name`: The name of the ingredient.
+      - `color`: A color in string format.
+      - `parts`: An integer representing the distribution.
+
+Example Response:
+
+```json
+{
+  "success": true,
+  "drink": [
+   {
+      "id": 1,
+      "title": "Water",
+      "recipe": [
+         {
+            "name": "water",
+            "color": "blue",
+            "parts": 1
+         },
+      ]
+   }
+  ]
+}
+```
+
+### Create a new Question
+
+`POST '/api/v0.1.0/questions'`
+
+Creates a new drink - Available only to users with Manager roles.
+
+- Request Arguments: None
+- Request Body Properties:
+  - `title`: The question
+  - `recipe`: An array of object(s) with the following properties:
+    - `name`: The name of the ingredient.
+    - `color`: A color in string format.
+    - `parts`: An integer representing the distribution.
+- Returns: An object with the following properties:
+  - `recipe`: HTTP status code
+  - `success`: A boolean representing the status of the result of the request.
+  - `drink`: An array with a single object representing the newly created drink with the following properties:
+    - `id`: The ID of the drink.
+    - `title`: The title of the drink.
+    - `recipe`: An array of objects with the following properties:
+      - `name`: The name of the ingredient.
+      - `color`: A color in string format.
+      - `parts`: An integer representing the distribution.
+  
+Example Response:
+
+```json
+{
+  "status_code": 201,
+  "success": true,
+  "message": "created"
+}
+```
+
+## Errors
+
+The following are the mostly likely errors that can occur when making requests:
+
+### Bad Request
+
+This could be as a result of passing:
+
+- Empty or incomplete body parameters
+- Invalid type of data
+
+```json
+{
+  "success": false,
+  "error": 400,
+  "message": "bad request",
+}
+```
+
+### Resource not Found
+
+This means that no result could be found for the requested resource.
+
+```json
+{
+  "success": false,
+  "error": 404,
+  "message": "resource not found",
+}
+```
+
+### Method not Allowed
+
+This is because no endpoint is specified for the specified method of request
+
+```json
+{
+  "success": false,
+  "error": 405,
+  "message": "method not allowed"
+}
+```
+
+### Conflict
+
+This indicates that data requested to be created, already exists and as such would cause a conflict if created.
+
+```json
+{
+  "success": false,
+  "error": 409,
+  "message": "conflict",
+}
+```
+
+### Unprocessable Entity
+
+This indicates that a request passed an empty value.
+
+Example Request Body:
+
+```json
+{
+  "title": ""
+}
+```
+
+Example Response:
+
+```json
+{
+  "success": false,
+  "error": 422,
+  "message": "unprocessable",
+}
+```
+
+### Internal Server error
+
+This indicates that the server encountered an error on attempt to process the request.
+> _Notice_: If this is encountered, please create an issue on this repo and give a detailed description of events leading up to the error.
+
+Example Response:
+
+```json
+{
+  "success": false,
+  "error": 500,
+  "message": "internal server error"
+}
+```
+
+### Authentication and Authorization Errors
+
+These are the most likely errors you may come across relating to Authentication and Authorization.
+
