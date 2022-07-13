@@ -86,8 +86,8 @@ def create_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('drinks/<id>')
-@require_auth('patch:drinks')
+@app.route('/drinks/<id>')
+@requires_auth('patch:drinks')
 def edit_drink(id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
     drink.title = request.get_json['title']
