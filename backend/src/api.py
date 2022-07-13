@@ -193,7 +193,7 @@ def edit_drink(id):
         query_drink = Drink.query.filter(
             Drink.title.ilike(str(incoming_title))).first()
 
-        if query_drink is None:
+        if query_drink is None or query_drink.title == drink.title:
             try:
                 drink.title = incoming_title if incoming_title != None else drink.title
                 drink.recipe = incoming_recipe if incoming_recipe != None else drink.recipe
