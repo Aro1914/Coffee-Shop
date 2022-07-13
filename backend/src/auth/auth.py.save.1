@@ -44,7 +44,7 @@ def get_token_auth_header():
             'description': 'Authorization header is expected.'
         }, 401)
 
-    parts = auth.split()
+    parts = auth.seyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikxnd2hVX1p2ajZMMTV0U1BwS0FmMCJ9.eyJpc3MiOiJodHRwczovL2FybzE5MTQudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYyY2RkZDlkNjllOTVmNjRiZTg5YTk0YSIsImF1ZCI6ImFyb19jb2ZmZWVfc2hvcCIsImlhdCI6MTY1NzY2ODYxMCwiZXhwIjoxNjU3Njc1ODA4LCJhenAiOiJiclFra09qWlV0QjJJVWVxUkUybUJzQWlKdTg5TFpsaSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmRyaW5rcyIsImdldDpkcmlua3MiLCJnZXQ6ZHJpbmtzLWRldGFpbCIsInBhdGNoOmRyaW5rcyIsInBvc3Q6ZHJpbmtzIl19.nLAdhsnKrmfPGC_eBQdzXxvISBmOcaBZnXJERRqM_f1fMfJNC3SG2Q_YkchE8UdUFXhFj6fr57ebfTiBRigcPam8_zQBzfydGxdZGMQOfRJTRZbxfOIFQU9jFDVO3RWASubEndpyjrQJ_VvfhOpF4kVYNEygiWNC9QbkwR802WM6RsbZlWcuN8xn18pMW9ACLWdWKfRxuGPT-DuMSu0PjEBRgWejlP85JpWVTlt0bJ1eUZtGhjeHxRdGFjYbhLsWRDY1r_-_rovPA3HfmE15VBx_Jn-rFP8W0-7hXlG00cEGVk19KxAy1Asfo7M3CYleVobT0JHboY7DPLcb02AvNAplit()
     if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
@@ -176,7 +176,7 @@ def requires_auth(permissions=''):
             try:
                 payload = verify_decode_jwt(token)
             except:
-                abort(403)
+                abort(401)
 
             check_permissions(permissions, payload)
 
