@@ -146,7 +146,7 @@ Example Response:
 
 ### Update Drink
 
-`PATCH '/api/v0.1.0/questions/<int:id>'`
+`PATCH '/drinks/<int:id>'`
 
 Update a drink - Available only to users with Manager roles.
 
@@ -189,9 +189,9 @@ Example Response:
 }
 ```
 
-### Create a new Question
+### Create a new Drink
 
-`POST '/api/v0.1.0/questions'`
+`POST '/drinks'`
 
 Creates a new drink - Available only to users with Manager roles.
 
