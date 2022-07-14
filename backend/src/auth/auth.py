@@ -176,7 +176,7 @@ def requires_auth(permissions=''):
             try:
                 payload = verify_decode_jwt(token)
             except:
-                abort(403)
+                abort(401)
 
             check_permissions(permissions, payload)
 

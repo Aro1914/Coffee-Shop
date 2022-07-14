@@ -44,7 +44,7 @@ def get_error():
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this function will add one
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -173,45 +173,95 @@ def create_drink():
 @app.route('/drinks/<id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
 def edit_drink(id):
+    # This sets the status code to 500 in the event of any unhandled errors
     set_error(500)
     try:
+        # This attempts to retrieve the requested drink to be updated from the database
         drink = Drink.query.filter(Drink.id == id).one_or_none()
+        # If the drink does not exist then a 404 error is thrown
+        if drink is None:
+            set_error(404)
+            raise
+        '''
+        Variables to store the incoming title, and recipe are declared 
+        regardless of if they do exist in the request body
+        ''' 
         incoming_title = None
         incoming_recipe = None
+        # Boolean variables to hold the occurence of the title or recipe in the request body
+        has_title = 'title' in request.get_json()
+        has_recipe = 'recipe'in request.get_json()
+        '''
+        Attempt to assign the values from the request body properties 
+        to the variables that will be used in the update
+        '''
         try:
+            '''
+            This sets the status code to 400 in the event the title cannot be 
+            parsed to string or the recipe cannot be converted to a list
+            '''
             set_error(400)
-            if not ('title' in request.get_json() and 'recipe' in request.get_json()):
+            '''
+            Check to see if either title or recipe was present in the request body
+            properties, if neither were present then a 422 status code is returned 
+            indicating that the request cannot be processed
+            '''
+            if not (has_title or has_recipe):
                 set_error(422)
                 raise
-            incoming_title = request.get_json(
-            )['title'] if 'title' in request.get_json() else None
-            incoming_recipe = json.dumps(request.get_json(
-            )['recipe']) if 'recipe' in request.get_json() else None
+            '''
+            If the title was present, the value is assigned to a variable that will
+            be used for update
+            '''
+            if has_title:
+                incoming_title = str(request.get_json()['title'])
+            '''
+            If the recipe was present, the value is assigned to a variable that will
+            be used for update
+            '''
+            if has_recipe:
+                incoming_recipe = json.dumps(
+                    request.get_json()['recipe']
         except:
             raise
-
+        '''
+        This attempts to retrieve a drink with the title in the request body this is
+        to ensure that the update would not result in a conflict with a title of 
+        another drink to enforce uniqueness of drink titles
+        '''
         query_drink = Drink.query.filter(
             Drink.title.ilike(str(incoming_title))).first()
-
+        '''
+        This validates that no other drink has a title as the one in the request body
+        else the title is the same as the one for the drink with ID provided to be
+        updated that way a conflict would not arise as the title would be unchanged
+        after the update 
+        '''
         if query_drink is None or query_drink.title == drink.title:
             try:
-                drink.title = incoming_title if incoming_title != None else drink.title
-                drink.recipe = incoming_recipe if incoming_recipe != None else drink.recipe
+                # If the title was provided then the drink's title is updated
+                if has_title:
+                    drink.title = incoming_title
+                # If the recipe was provided then the drink's recipe is updated
+                if has_recipe:
+                    drink.recipe = incoming_recipe
+                # The changes are effected to the database
                 drink.update()
             except:
                 raise
         else:
             set_error(409)
             raise
-        if drink is None:
-            set_error(404)
-            raise
-
+        # The result of the request is sent back to the client
         return jsonify({
-            'success': True,
-            'drinks': [drink.long()],
+            'success': True, # Indicating the request was processed successfully
+            'drinks': [drink.long()], # The full representation of the updated drink
         })
     except:
+        '''
+        The current status code is aborted depending on which part of the 
+        endpoint encountered an error or did not pass a condition
+        ''' 
         abort(get_error())
 
 
