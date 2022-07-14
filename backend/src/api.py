@@ -44,7 +44,7 @@ def get_error():
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this function will add one
 '''
-#db_drop_and_create_all()
+# db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -185,12 +185,12 @@ def edit_drink(id):
         '''
         Variables to store the incoming title, and recipe are declared 
         regardless of if they do exist in the request body
-        ''' 
+        '''
         incoming_title = None
         incoming_recipe = None
-        # Boolean variables to hold the occurence of the title or recipe in the request body
+        # Boolean variables to hold the occurrence of the title or recipe in the request body
         has_title = 'title' in request.get_json()
-        has_recipe = 'recipe'in request.get_json()
+        has_recipe = 'recipe' in request.get_json()
         '''
         Attempt to assign the values from the request body properties 
         to the variables that will be used in the update
@@ -221,7 +221,7 @@ def edit_drink(id):
             '''
             if has_recipe:
                 incoming_recipe = json.dumps(
-                    request.get_json()['recipe']
+                    request.get_json()['recipe'])
         except:
             raise
         '''
@@ -254,14 +254,15 @@ def edit_drink(id):
             raise
         # The result of the request is sent back to the client
         return jsonify({
-            'success': True, # Indicating the request was processed successfully
-            'drinks': [drink.long()], # The full representation of the updated drink
+            'success': True,  # Indicating the request was processed successfully
+            # The full representation of the updated drink
+            'drinks': [drink.long()],
         })
     except:
         '''
         The current status code is aborted depending on which part of the 
         endpoint encountered an error or did not pass a condition
-        ''' 
+        '''
         abort(get_error())
 
 
