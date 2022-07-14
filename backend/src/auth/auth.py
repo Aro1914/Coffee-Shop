@@ -1,17 +1,21 @@
 import json
+import os
+from dotenv import load_dotenv
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-
 # AUTH0_DOMAIN = 'udacity-fsnd.auth0.com'
 # ALGORITHMS = ['RS256']
 # API_AUDIENCE = 'dev'
 
-AUTH0_DOMAIN = 'aro1914.us.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'aro_coffee_shop'
+load_dotenv()
+env = os.environ
+
+AUTH0_DOMAIN = env.get('AUTH0_DOMAIN')
+ALGORITHMS = [env.get('ALGORITHMS')]
+API_AUDIENCE = env.get('API_AUDIENCE')
 
 ## AuthError Exception
 '''
