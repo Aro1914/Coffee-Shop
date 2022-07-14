@@ -20,7 +20,7 @@ Once you have your virtual environment setup and running, install dependencies b
 pip install -r requirements.txt
 ```
 
-This will install all of the required packages we selected within the `requirements.txt` file and typed-ast.
+This will install all of the required packages we selected within the `requirements.txt` file.
 
 ##### Key Dependencies
 
