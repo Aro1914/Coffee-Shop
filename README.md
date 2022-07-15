@@ -37,3 +37,5 @@ The `./frontend` directory contains a complete Ionic frontend to consume the dat
 [View the README.md within ./frontend for more details.](./frontend/README.md)
 
 ## Proof of Acceptance
+
+![Screenshot 2022-07-14 9 34 17 PM](https://user-images.githubusercontent.com/68448315/179282973-da15dda4-fbfc-4e38-8095-066f7b5f7844.png)
